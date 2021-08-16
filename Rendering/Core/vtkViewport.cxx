@@ -228,6 +228,15 @@ void vtkViewport::DisplayToView()
 // Convert view coordinates to display coordinates.
 void vtkViewport::ViewToDisplay()
 {
+  double x = this->ViewPoint[0];
+  double y = this->ViewPoint[1];
+  double z = this->ViewPoint[2];
+  this->ViewToDisplay(x, y, z);
+  this->SetDisplayPoint(x, y, z);
+}
+
+void vtkViewport::ViewToDisplay(double &x, double &y, double &z)
+{
   if ( this->VTKWindow )
   {
     double dx,dy;
@@ -242,14 +251,16 @@ void vtkViewport::ViewToDisplay()
     sizex = size[0];
     sizey = size[1];
 
-    dx = (this->ViewPoint[0] + 1.0) *
+    dx = (x + 1.0) *
       (sizex*(this->Viewport[2]-this->Viewport[0])) / 2.0 +
         sizex*this->Viewport[0];
-    dy = (this->ViewPoint[1] + 1.0) *
+    dy = (y + 1.0) *
       (sizey*(this->Viewport[3]-this->Viewport[1])) / 2.0 +
         sizey*this->Viewport[1];
-
-    this->SetDisplayPoint(dx,dy,this->ViewPoint[2]);
+    
+    x = dx;
+    y = dy;
+    //z = z; // this transform does not change the z
   }
 }
 
