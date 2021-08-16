@@ -839,6 +839,60 @@ protected:
   vtkPropCollection *GL2PSSpecialPropCollection;
 
   /**
+   * Cache of CompositeProjectionTransformationMatrix from this->LastCompositeProjectionTransformationMatrixCamera.
+   */
+  double CompositeProjectionTransformationMatrix[16];
+
+  /**
+   * Tiled Aspect Ratio used to get the transform in this->CompositeProjectionTransformationMatrix.
+   */
+  double LastCompositeProjectionTransformationMatrixTiledAspectRatio;
+
+  /**
+   * Camera used to get the transform in this->CompositeProjectionTransformationMatrix.
+   */
+  vtkCamera* LastCompositeProjectionTransformationMatrixCamera;
+
+  /**
+   * Modified time from the camera when this->CompositeProjectionTransformationMatrix was set.
+   */
+  vtkMTimeType LastCompositeProjectionTransformationMatrixCameraModified;
+
+  /**
+   * Cache of ProjectionTransformationMatrix from this->LastProjectionTransformationMatrixCamera.
+   */
+  double ProjectionTransformationMatrix[16];
+
+  /**
+   * Tiled Aspect Ratio used to get the transform in this->ProjectionTransformationMatrix.
+   */
+  double LastProjectionTransformationMatrixTiledAspectRatio;
+
+  /**
+   * Camera used to get the transform in this->ProjectionTransformationMatrix.
+   */
+  vtkCamera* LastProjectionTransformationMatrixCamera;
+
+  /**
+   * Modified time from the camera when this->ProjectionTransformationMatrix was set.
+   */
+  vtkMTimeType LastProjectionTransformationMatrixCameraModified;
+
+
+  /**
+   * Gets the ActiveCamera CompositeProjectionTransformationMatrix, only computing it if necessary.
+   * This function expects that this->ActiveCamera is not nullptr.
+   */
+  double* GetCompositeProjectionTransformationMatrix();
+
+  /**
+   * Gets the ActiveCamera ProjectionTransformationMatrix, only computing it if necessary.
+   * This function expects that this->ActiveCamera is not nullptr.
+   */
+  double* GetProjectionTransformationMatrix();
+
+
+  /**
    * Ask all props to update and draw any opaque and translucent
    * geometry. This includes both vtkActors and vtkVolumes
    * Returns the number of props that rendered geometry.
