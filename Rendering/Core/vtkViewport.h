@@ -237,6 +237,15 @@ public:
     this->ViewToDisplay();
   }
 
+  /**
+   * Convert world point coordinates to display (or screen) coordinates.
+   */
+  inline void WorldToDisplay(double &x, double &y, double &z)
+  {
+    this->WorldToView(x, y, z);
+    this->ViewToDisplay(x, y, z);
+  }
+
   //@{
   /**
    * These methods map from one coordinate system to another.
@@ -245,22 +254,23 @@ public:
    * only if the window has been realized (e.g., GetSize() returns
    * something other than (0,0)).
    */
-  virtual void LocalDisplayToDisplay(double& x, double& y);
-  virtual void DisplayToNormalizedDisplay(double& u, double& v);
-  virtual void NormalizedDisplayToViewport(double& x, double& y);
-  virtual void ViewportToNormalizedViewport(double& u, double& v);
-  virtual void NormalizedViewportToView(double& x, double& y, double& z);
-  virtual void ViewToPose(double&, double&, double&) {}
-  virtual void PoseToWorld(double&, double&, double&) {}
-  virtual void DisplayToLocalDisplay(double& x, double& y);
-  virtual void NormalizedDisplayToDisplay(double& u, double& v);
-  virtual void ViewportToNormalizedDisplay(double& x, double& y);
-  virtual void NormalizedViewportToViewport(double& u, double& v);
-  virtual void ViewToNormalizedViewport(double& x, double& y, double& z);
-  virtual void PoseToView(double&, double&, double&) {}
-  virtual void WorldToPose(double&, double&, double&) {}
-  virtual void ViewToWorld(double&, double&, double&) {}
-  virtual void WorldToView(double&, double&, double&) {}
+  virtual void LocalDisplayToDisplay(double &x, double &y);
+  virtual void DisplayToNormalizedDisplay(double &u, double &v);
+  virtual void NormalizedDisplayToViewport(double &x, double &y);
+  virtual void ViewportToNormalizedViewport(double &u, double &v);
+  virtual void NormalizedViewportToView(double &x, double &y, double &z);
+  virtual void ViewToPose(double &, double &, double &) {}
+  virtual void PoseToWorld(double &, double &, double &) {}
+  virtual void DisplayToLocalDisplay(double &x, double &y);
+  virtual void NormalizedDisplayToDisplay(double &u, double &v);
+  virtual void ViewportToNormalizedDisplay(double &x, double &y);
+  virtual void NormalizedViewportToViewport(double &u, double &v);
+  virtual void ViewToNormalizedViewport(double &x, double &y, double &z);
+  virtual void PoseToView(double &, double &, double &) {}
+  virtual void WorldToPose(double &, double &, double &) {}
+  virtual void ViewToWorld(double &, double &, double &) {}
+  virtual void WorldToView(double &, double &, double &) {}
+  virtual void ViewToDisplay(double &x, double &y, double &z);
   //@}
 
   //@{
