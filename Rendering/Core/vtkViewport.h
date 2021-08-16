@@ -237,6 +237,15 @@ public:
     this->ViewToDisplay();
   }
 
+  /**
+   * Convert world point coordinates to display (or screen) coordinates.
+   */
+  inline void WorldToDisplay(double& x, double& y, double& z)
+  {
+    this->WorldToView(x, y, z);
+    this->ViewToDisplay(x, y, z);
+  }
+
   //@{
   /**
    * These methods map from one coordinate system to another.
@@ -261,6 +270,7 @@ public:
   virtual void WorldToPose(double&, double&, double&) {}
   virtual void ViewToWorld(double&, double&, double&) {}
   virtual void WorldToView(double&, double&, double&) {}
+  virtual void ViewToDisplay(double& x, double& y, double& z);
   //@}
 
   //@{
@@ -403,6 +413,10 @@ protected:
   double WorldPoint[4];
 
 private:
+  std::array<int, 2> LastComputeAspectSize;
+  std::array<double, 4> LastComputeAspectVPort;
+  std::array<double, 2> LastComputeAspectPixelAspect;
+
   vtkViewport(const vtkViewport&) = delete;
   void operator=(const vtkViewport&) = delete;
 };
