@@ -276,6 +276,7 @@ inline void vtkMatrix4x4::MultiplyAndTranspose4x4(
 inline void vtkMatrix4x4::Multiply4x4(const vtkMatrix4x4* a, const vtkMatrix4x4* b, vtkMatrix4x4* c)
 {
   vtkMatrix4x4::Multiply4x4(*a->Element, *b->Element, *c->Element);
+  c->Modified();
 }
 
 //----------------------------------------------------------------------------
