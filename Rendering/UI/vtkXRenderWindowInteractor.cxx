@@ -306,7 +306,6 @@ void vtkXRenderWindowInteractor::Initialize()
   }
 
   vtkRenderWindow* ren;
-  int* size;
 
   // make sure we have a RenderWindow and camera
   if (!this->RenderWindow)
@@ -329,9 +328,8 @@ void vtkXRenderWindowInteractor::Initialize()
 
   vtkXRenderWindowInteractorInternals::Instances.insert(this);
 
-  size = ren->GetActualSize();
-  size[0] = ((size[0] > 0) ? size[0] : 300);
-  size[1] = ((size[1] > 0) ? size[1] : 300);
+  const int* size = ren->GetActualSize();
+  ren->SetSizeNoEvent(((size[0] > 0) ? size[0] : 300), ((size[1] > 0) ? size[1] : 300));
   XSync(this->DisplayId, False);
 
   ren->Start();
@@ -343,9 +341,7 @@ void vtkXRenderWindowInteractor::Initialize()
   //  Find the current window size
   XGetWindowAttributes(this->DisplayId, this->WindowId, &attribs);
 
-  size[0] = attribs.width;
-  size[1] = attribs.height;
-  ren->SetSize(size[0], size[1]);
+  ren->SetSizeNoEvent(attribs.width, attribs.height);
 
   this->Enable();
   this->Size[0] = size[0];

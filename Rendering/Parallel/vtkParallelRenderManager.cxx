@@ -518,15 +518,8 @@ void vtkParallelRenderManager::StartRender()
   }
 
   // Make adjustments for window size.
-  int* tilesize;
-  if (this->ForceRenderWindowSize)
-  {
-    tilesize = this->ForcedRenderWindowSize;
-  }
-  else
-  {
-    tilesize = this->RenderWindow->GetActualSize();
-  }
+  const int* tilesize = this->ForceRenderWindowSize ? this->ForcedRenderWindowSize
+                                                    : this->RenderWindow->GetActualSize();
   int size[2];
   size[0] = tilesize[0];
   size[1] = tilesize[1];
@@ -1020,15 +1013,8 @@ void vtkParallelRenderManager::SetImageReductionFactorForUpdateRate(double desir
     return;
   }
 
-  int* size;
-  if (this->ForceRenderWindowSize)
-  {
-    size = this->ForcedRenderWindowSize;
-  }
-  else
-  {
-    size = this->RenderWindow->GetActualSize();
-  }
+  const int* size = this->ForceRenderWindowSize ? this->ForcedRenderWindowSize
+                                                : this->RenderWindow->GetActualSize();
   int numPixels = size[0] * size[1];
   int numReducedPixels =
     (int)(numPixels / (this->ImageReductionFactor * this->ImageReductionFactor));

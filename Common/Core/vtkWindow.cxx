@@ -52,16 +52,13 @@ vtkWindow::~vtkWindow()
 }
 
 //------------------------------------------------------------------------------
-int* vtkWindow::GetSize()
+const int* vtkWindow::GetSize()
 {
-  this->TileSize[0] = this->Size[0] * this->TileScale[0];
-  this->TileSize[1] = this->Size[1] * this->TileScale[1];
-
   return this->TileSize;
 }
 
 //------------------------------------------------------------------------------
-int* vtkWindow::GetActualSize()
+const int* vtkWindow::GetActualSize()
 {
   // Some subclasses override GetSize() to do some additional magic.
   this->GetSize();
@@ -79,11 +76,18 @@ void vtkWindow::SetSize(int width, int height)
 {
   if (this->Size[0] != width || this->Size[1] != height)
   {
-    this->Size[0] = width;
-    this->Size[1] = height;
+    this->SetSizeNoEvent(width, height);
     this->Modified();
     this->InvokeEvent(vtkCommand::WindowResizeEvent, nullptr);
   }
+}
+
+//------------------------------------------------------------------------------
+void vtkWindow::SetSizeNoEvent(int width, int height)
+{
+  this->Size[0] = width;
+  this->Size[1] = height;
+  this->ComputeTileSize();
 }
 
 //------------------------------------------------------------------------------

@@ -495,7 +495,8 @@ void vtkCocoaRenderWindow::SetSize(int width, int height)
 {
   static bool resizing = false;
 
-  if ((this->Size[0] != width) || (this->Size[1] != height) || this->GetParentId())
+  if ((this->GetActualSizeDirectly()[0] != width) || (this->GetActualSizeDirectly()[1] != height) ||
+    this->GetParentId())
   {
     this->Superclass::SetSize(width, height);
 
@@ -729,8 +730,8 @@ void vtkCocoaRenderWindow::CreateAWindow()
 
     if (this->FullScreen && screen)
     {
-      this->Size[0] = static_cast<int>(NSWidth(backingScreenRect));
-      this->Size[1] = static_cast<int>(NSHeight(backingScreenRect));
+      this->SetSizeNoEvent(static_cast<int>(NSWidth(backingScreenRect)),
+        static_cast<int>(NSHeight(backingScreenRect)));
 
       // Create an NSWindow with the screen's full size (in points, not pixels).
       theWindow = [[vtkCocoaFullScreenWindow alloc] initWithContentRect:screenRect
@@ -745,10 +746,9 @@ void vtkCocoaRenderWindow::CreateAWindow()
     }
     else
     {
-      if ((this->Size[0] + this->Size[1]) == 0)
+      if ((this->GetActualSizeDirectly()[0] + this->GetActualSizeDirectly()[1]) == 0)
       {
-        this->Size[0] = 300;
-        this->Size[1] = 300;
+        this->SetSizeNoEvent(300, 300);
       }
       if ((this->Position[0] + this->Position[1]) == 0)
       {
@@ -757,7 +757,7 @@ void vtkCocoaRenderWindow::CreateAWindow()
       }
 
       NSRect backingContentRect = NSMakeRect((CGFloat)this->Position[0], (CGFloat)this->Position[1],
-        (CGFloat)this->Size[0], (CGFloat)this->Size[1]);
+        (CGFloat)this->GetActualSizeDirectly()[0], (CGFloat)this->GetActualSizeDirectly()[1]);
 
       // Convert from pixels to points.
       NSRect contentRect;
@@ -823,7 +823,7 @@ void vtkCocoaRenderWindow::CreateAWindow()
       NSWindow* window = [parent window];
       assert(window);
       NSRect backingViewRect = NSMakeRect((CGFloat)this->Position[0], (CGFloat)this->Position[1],
-        (CGFloat)this->Size[0], (CGFloat)this->Size[1]);
+        (CGFloat)this->GetActualSizeDirectly()[0], (CGFloat)this->GetActualSizeDirectly()[1]);
       NSRect viewRect = [window convertRectFromBacking:backingViewRect];
 
       CGFloat width = NSWidth(viewRect);
@@ -872,7 +872,8 @@ void vtkCocoaRenderWindow::CreateAWindow()
     }
     else
     {
-      NSRect backingViewRect = NSMakeRect(0.0, 0.0, (CGFloat)this->Size[0], (CGFloat)this->Size[1]);
+      NSRect backingViewRect = NSMakeRect(0.0, 0.0, (CGFloat)this->GetActualSizeDirectly()[0],
+        (CGFloat)this->GetActualSizeDirectly()[1]);
 
       // Convert from points to pixels.
       NSWindow* window = (NSWindow*)this->GetRootWindow();
@@ -1086,7 +1087,7 @@ void vtkCocoaRenderWindow::Initialize()
 }
 
 //----------------------------------------------------------------------------
-int* vtkCocoaRenderWindow::GetSize()
+const int* vtkCocoaRenderWindow::GetSize()
 {
   // if we aren't mapped then just call super
   if (this->Mapped && !this->UseOffScreenBuffers)
@@ -1103,8 +1104,8 @@ int* vtkCocoaRenderWindow::GetSize()
     NSRect backingViewRect = [view convertRectToBacking:viewRect];
 
     // Update the ivar.
-    this->Size[0] = static_cast<int>(NSWidth(backingViewRect));
-    this->Size[1] = static_cast<int>(NSHeight(backingViewRect));
+    this->SetSizeNoEvent(
+      static_cast<int>(NSWidth(backingViewRect)), static_cast<int>(NSHeight(backingViewRect)));
   }
 
   return this->Superclass::GetSize();
@@ -1112,7 +1113,7 @@ int* vtkCocoaRenderWindow::GetSize()
 
 //----------------------------------------------------------------------------
 // Get the current size of the screen in pixels.
-int* vtkCocoaRenderWindow::GetScreenSize()
+const int* vtkCocoaRenderWindow::GetScreenSize()
 {
   // Get the NSScreen that the NSView is mostly on.  Either could be nil.
   NSView* view = (NSView*)this->GetWindowId();
@@ -1220,8 +1221,7 @@ void vtkCocoaRenderWindow::SetFullScreen(vtkTypeBool arg)
   {
     this->Position[0] = this->OldScreen[0];
     this->Position[1] = this->OldScreen[1];
-    this->Size[0] = this->OldScreen[2];
-    this->Size[1] = this->OldScreen[3];
+    this->SetSizeNoEvent(this->OldScreen[2], this->OldScreen[3]);
     this->Borders = this->OldScreen[4];
   }
   else

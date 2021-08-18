@@ -266,7 +266,6 @@ void vtkSDL2RenderWindowInteractor::AddEventHandler()
 void vtkSDL2RenderWindowInteractor::Initialize()
 {
   vtkRenderWindow* ren;
-  int* size;
 
   // make sure we have a RenderWindow and camera
   if (!this->RenderWindow)
@@ -283,7 +282,7 @@ void vtkSDL2RenderWindowInteractor::Initialize()
   ren = this->RenderWindow;
   ren->Start();
   ren->End();
-  size = ren->GetSize();
+  const int* size = ren->GetSize();
   ren->GetPosition();
 
   this->Enable();

@@ -193,7 +193,7 @@ void vtkResizingWindowToImageFilter::RequestData(vtkInformation* vtkNotUsed(requ
   this->GetScaleFactorsAndSize(this->Size, newSize, scale, &approximate);
 
   // save window state
-  int* oldptr = renWin->GetSize();
+  const int* oldptr = renWin->GetSize();
   int oldSize[2] = { oldptr[0], oldptr[1] };
   bool oldOffScreen = renWin->GetUseOffScreenBuffers();
   vtkTypeBool oldSwap = renWin->GetSwapBuffers();

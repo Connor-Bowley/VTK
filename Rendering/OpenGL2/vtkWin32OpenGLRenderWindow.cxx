@@ -367,7 +367,7 @@ void AdjustWindowRectForBorders(
 //------------------------------------------------------------------------------
 void vtkWin32OpenGLRenderWindow::SetSize(int width, int height)
 {
-  if ((this->Size[0] != width) || (this->Size[1] != height))
+  if ((this->GetActualSizeDirectly()[0] != width) || (this->GetActualSizeDirectly()[1] != height))
   {
     this->Superclass::SetSize(width, height);
 
@@ -963,8 +963,9 @@ void vtkWin32OpenGLRenderWindow::CreateAWindow()
 #endif
       int x = this->Position[0];
       int y = this->Position[1];
-      int height = ((this->Size[1] > 0) ? this->Size[1] : 300);
-      int width = ((this->Size[0] > 0) ? this->Size[0] : 300);
+      int height =
+        ((this->GetActualSizeDirectly()[1] > 0) ? this->GetActualSizeDirectly()[1] : 300);
+      int width = ((this->GetActualSizeDirectly()[0] > 0) ? this->GetActualSizeDirectly()[0] : 300);
 
       /* create window */
       if (this->ParentId)
@@ -1150,7 +1151,7 @@ void vtkWin32OpenGLRenderWindow::DestroyWindow()
 
 //------------------------------------------------------------------------------
 // Get the current size of the window.
-int* vtkWin32OpenGLRenderWindow::GetSize(void)
+const int* vtkWin32OpenGLRenderWindow::GetSize(void)
 {
   // if we aren't mapped then just call super
   if (this->WindowId && !this->UseOffScreenBuffers)
@@ -1160,13 +1161,11 @@ int* vtkWin32OpenGLRenderWindow::GetSize(void)
     // Find the current window size
     if (GetClientRect(this->WindowId, &rect))
     {
-      this->Size[0] = rect.right;
-      this->Size[1] = rect.bottom;
+      this->SetSizeNoEvent(rect.right, rect.bottom);
     }
     else
     {
-      this->Size[0] = 0;
-      this->Size[1] = 0;
+      this->SetSizeNoEvent(0, 0);
     }
   }
 
@@ -1175,7 +1174,7 @@ int* vtkWin32OpenGLRenderWindow::GetSize(void)
 
 //------------------------------------------------------------------------------
 // Get the size of the whole screen.
-int* vtkWin32OpenGLRenderWindow::GetScreenSize(void)
+const int* vtkWin32OpenGLRenderWindow::GetScreenSize(void)
 {
   HDC hDC = ::GetDC(nullptr);
   if (hDC)
@@ -1238,8 +1237,7 @@ void vtkWin32OpenGLRenderWindow::SetFullScreen(vtkTypeBool arg)
   {
     this->Position[0] = this->OldScreen[0];
     this->Position[1] = this->OldScreen[1];
-    this->Size[0] = this->OldScreen[2];
-    this->Size[1] = this->OldScreen[3];
+    this->SetSizeNoEvent(this->OldScreen[2], this->OldScreen[3]);
     this->Borders = this->OldScreen[4];
   }
   else
@@ -1294,8 +1292,7 @@ void vtkWin32OpenGLRenderWindow::PrefFullScreen()
   // use full screen
   this->Position[0] = 0;
   this->Position[1] = 0;
-  this->Size[0] = r.right - r.left;
-  this->Size[1] = r.bottom - r.top;
+  this->SetSizeNoEvent(r.right - r.left, r.bottom - r.top);
 }
 
 //------------------------------------------------------------------------------

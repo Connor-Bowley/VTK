@@ -439,8 +439,8 @@ void vtkXOpenGLRenderWindow::CreateAWindow()
 
   x = this->Position[0];
   y = this->Position[1];
-  width = ((this->Size[0] > 0) ? this->Size[0] : 300);
-  height = ((this->Size[1] > 0) ? this->Size[1] : 300);
+  width = ((this->GetActualSizeDirectly()[0] > 0) ? this->GetActualSizeDirectly()[0] : 300);
+  height = ((this->GetActualSizeDirectly()[1] > 0) ? this->GetActualSizeDirectly()[1] : 300);
 
   xsh.width = width;
   xsh.height = height;
@@ -536,8 +536,12 @@ void vtkXOpenGLRenderWindow::CreateAWindow()
     // RESIZE THE WINDOW TO THE DESIRED SIZE
     vtkDebugMacro(<< "Resizing the xwindow\n");
     XResizeWindow(this->DisplayId, this->WindowId,
-      ((this->Size[0] > 0) ? static_cast<unsigned int>(this->Size[0]) : 300),
-      ((this->Size[1] > 0) ? static_cast<unsigned int>(this->Size[1]) : 300));
+      ((this->GetActualSizeDirectly()[0] > 0)
+          ? static_cast<unsigned int>(this->GetActualSizeDirectly()[0])
+          : 300),
+      ((this->GetActualSizeDirectly()[1] > 0)
+          ? static_cast<unsigned int>(this->GetActualSizeDirectly()[1])
+          : 300));
     XSync(this->DisplayId, False);
   }
 
@@ -675,8 +679,7 @@ void vtkXOpenGLRenderWindow::CreateAWindow()
   {
     XFree(v);
   }
-  this->Size[0] = width;
-  this->Size[1] = height;
+  this->SetSizeNoEvent(width, height);
 }
 
 void vtkXOpenGLRenderWindow::DestroyWindow()
@@ -856,8 +859,7 @@ void vtkXOpenGLRenderWindow::SetFullScreen(vtkTypeBool arg)
   {
     this->Position[0] = this->OldScreen[0];
     this->Position[1] = this->OldScreen[1];
-    this->Size[0] = this->OldScreen[2];
-    this->Size[1] = this->OldScreen[3];
+    this->SetSizeNoEvent(this->OldScreen[2], this->OldScreen[3]);
     this->Borders = this->OldScreen[4];
   }
   else
@@ -897,14 +899,11 @@ void vtkXOpenGLRenderWindow::PrefFullScreen()
 
   if (this->UseOffScreenBuffers)
   {
-    this->Size[0] = 1280;
-    this->Size[1] = 1024;
+    this->SetSizeNoEvent(1280, 1024);
   }
   else
   {
-    const int* size = this->GetScreenSize();
-    this->Size[0] = size[0];
-    this->Size[1] = size[1];
+    this->SetSizeNoEvent(this->GetScreenSize());
   }
 
   // don't show borders
@@ -942,7 +941,7 @@ void vtkXOpenGLRenderWindow::Start(void)
 // Specify the size of the rendering window.
 void vtkXOpenGLRenderWindow::SetSize(int width, int height)
 {
-  if ((this->Size[0] != width) || (this->Size[1] != height))
+  if ((this->GetActualSizeDirectly()[0] != width) || (this->GetActualSizeDirectly()[1] != height))
   {
     this->Superclass::SetSize(width, height);
 
@@ -972,7 +971,7 @@ void vtkXOpenGLRenderWindow::SetSize(int width, int height)
 
 void vtkXOpenGLRenderWindow::SetSizeNoXResize(int width, int height)
 {
-  if ((this->Size[0] != width) || (this->Size[1] != height))
+  if ((this->GetActualSizeDirectly()[0] != width) || (this->GetActualSizeDirectly()[1] != height))
   {
     this->Superclass::SetSize(width, height);
     this->Modified();
@@ -1182,7 +1181,7 @@ vtkTypeBool vtkXOpenGLRenderWindow::GetEventPending()
 }
 
 // Get the size of the screen in pixels
-int* vtkXOpenGLRenderWindow::GetScreenSize()
+const int* vtkXOpenGLRenderWindow::GetScreenSize()
 {
   // get the default display connection
   if (!this->DisplayId)
@@ -1566,8 +1565,7 @@ void vtkXOpenGLRenderWindow::Render()
     //  Find the current window size
     XGetWindowAttributes(this->DisplayId, this->WindowId, &attribs);
 
-    this->Size[0] = attribs.width;
-    this->Size[1] = attribs.height;
+    this->SetSizeNoEvent(attribs.width, attribs.height);
   }
 
   // Now do the superclass stuff

@@ -115,7 +115,7 @@ void vtkMagnifierRepresentation::WidgetInteraction(double eventPos[2])
   this->BuildRepresentation();
 
   // Move the viewport /renderer to the current mouse position
-  int* winSize = this->Renderer->GetRenderWindow()->GetSize();
+  const int* winSize = this->Renderer->GetRenderWindow()->GetSize();
   int* vpSize = this->Renderer->GetSize();
   double vpxMax = static_cast<double>(vpSize[0]) / winSize[0];
   double vpyMax = static_cast<double>(vpSize[1]) / winSize[1];

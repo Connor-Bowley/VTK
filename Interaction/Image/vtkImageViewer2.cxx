@@ -185,7 +185,7 @@ void vtkImageViewer2::SetSize(int width, int height)
 }
 
 //------------------------------------------------------------------------------
-int* vtkImageViewer2::GetSize()
+const int* vtkImageViewer2::GetSize()
 {
   return this->RenderWindow->GetSize();
 }

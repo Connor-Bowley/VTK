@@ -52,9 +52,10 @@ void vtkExternalOpenGLRenderWindow::Start(void)
   }
 
   // creates or resizes the framebuffer
-  this->Size[0] = (this->Size[0] > 0 ? this->Size[0] : 300);
-  this->Size[1] = (this->Size[1] > 0 ? this->Size[1] : 300);
-  this->CreateFramebuffers(this->Size[0], this->Size[1]);
+  this->SetSizeNoEvent(
+    (this->GetActualSizeDirectly()[0] > 0 ? this->GetActualSizeDirectly()[0] : 300),
+    (this->GetActualSizeDirectly()[1] > 0 ? this->GetActualSizeDirectly()[1] : 300));
+  this->CreateFramebuffers(this->GetActualSizeDirectly()[0], this->GetActualSizeDirectly()[1]);
 
   // For stereo, render the correct eye based on the OpenGL buffer mode
   GLint bufferType;

@@ -166,7 +166,7 @@ public:
    * Get the current size of the screen in pixels.
    * An HDTV for example would be 1920 x 1080 pixels.
    */
-  int* GetScreenSize() VTK_SIZEHINT(2) override;
+  const int* GetScreenSize() VTK_SIZEHINT(2) override;
 
   /**
    * Get the position (x and y) of the rendering window in

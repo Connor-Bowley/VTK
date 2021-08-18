@@ -171,7 +171,6 @@ void vtkWin32RenderWindowInteractor::StartEventLoop()
 void vtkWin32RenderWindowInteractor::Initialize()
 {
   vtkRenderWindow* ren;
-  int* size;
 
   // make sure we have a RenderWindow and camera
   if (!this->RenderWindow)
@@ -188,7 +187,7 @@ void vtkWin32RenderWindowInteractor::Initialize()
   ren = this->RenderWindow;
   ren->Start();
   ren->End();
-  size = ren->GetSize();
+  const int* size = ren->GetSize();
   ren->GetPosition();
 
   this->WindowId = (HWND)(ren->GetGenericWindowId());
@@ -259,8 +258,7 @@ void vtkWin32RenderWindowInteractor::Enable()
     DragAcceptFiles(this->WindowId, TRUE);
 
     // in case the size of the window has changed while we were away
-    int* size;
-    size = ren->GetSize();
+    const int* size = ren->GetSize();
     this->Size[0] = size[0];
     this->Size[1] = size[1];
   }

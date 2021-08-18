@@ -148,8 +148,8 @@ void vtkWin32HardwareWindow::Create()
   {
     int x = this->Position[0];
     int y = this->Position[1];
-    int height = ((this->Size[1] > 0) ? this->Size[1] : 300);
-    int width = ((this->Size[0] > 0) ? this->Size[0] : 300);
+    int height = ((this->GetActualSizeDirectly()[1] > 0) ? this->GetActualSizeDirectly()[1] : 300);
+    int width = ((this->GetActualSizeDirectly()[0] > 0) ? this->GetActualSizeDirectly()[0] : 300);
 
     /* create window */
     if (this->ParentId)
@@ -216,7 +216,7 @@ void vtkWin32HardwareWindow::Destroy()
 void vtkWin32HardwareWindow::SetSize(int x, int y)
 {
   static bool resizing = false;
-  if ((this->Size[0] != x) || (this->Size[1] != y))
+  if ((this->GetActualSizeDirectly()[0] != x) || (this->GetActualSizeDirectly()[1] != y))
   {
     this->Superclass::SetSize(x, y);
 

@@ -72,7 +72,7 @@ public:
   /**
    * Get the current size of the window in pixels.
    */
-  int* GetSize() VTK_SIZEHINT(2) override;
+  const int* GetSize() VTK_SIZEHINT(2) override;
 
   //@{
   /**
@@ -85,7 +85,7 @@ public:
   /**
    * Get the current size of the screen in pixels.
    */
-  int* GetScreenSize() VTK_SIZEHINT(2) override;
+  const int* GetScreenSize() VTK_SIZEHINT(2) override;
 
   /**
    * Get the position in screen coordinates of the window.

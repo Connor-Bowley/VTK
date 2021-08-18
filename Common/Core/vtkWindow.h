@@ -76,7 +76,7 @@ public:
    * Get the size (width and height) of the rendering window in
    * screen coordinates (in pixels).
    */
-  virtual int* GetSize() VTK_SIZEHINT(2);
+  virtual const int* GetSize() VTK_SIZEHINT(2);
 
   /**
    * Set the size (width and height) of the rendering window in
@@ -88,18 +88,25 @@ public:
    */
   virtual void SetSize(int width, int height);
   virtual void SetSize(int a[2]);
+
+  /**
+   * Equivalent to SetSize except that a vtkCommand::WindowResizeEvent
+   * will not be fired if the size changes.
+   */
+  void SetSizeNoEvent(int width, int height);
+  inline void SetSizeNoEvent(const int _arg[2]) { this->SetSizeNoEvent(_arg[0], _arg[1]); }
   //@}
 
   /**
    * GetSize() returns the size * this->TileScale, whereas this method returns
    * the size without multiplying with the tile scale. Measured in pixels.
    */
-  int* GetActualSize() VTK_SIZEHINT(2);
+  const int* GetActualSize() VTK_SIZEHINT(2);
 
   /**
    * Get the current size of the screen in pixels.
    */
-  virtual int* GetScreenSize() VTK_SIZEHINT(2) { return nullptr; }
+  virtual const int* GetScreenSize() VTK_SIZEHINT(2) { return nullptr; }
 
   //@{
   /**
@@ -249,7 +256,19 @@ public:
    * have no impact. It is just in handling annotation that this information
    * must be available to the mappers and the coordinate calculations.
    */
-  vtkSetVector2Macro(TileScale, int);
+  virtual void SetTileScale(int _arg1, int _arg2)
+  {
+    vtkDebugMacro(<< this->GetClassName() << " (" << this << "): setting " << TileScale << " to ("
+                  << _arg1 << "," << _arg2 << ")");
+    if ((this->TileScale[0] != _arg1) || (this->TileScale[1] != _arg2))
+    {
+      this->TileScale[0] = _arg1;
+      this->TileScale[1] = _arg2;
+      this->ComputeTileSize();
+      this->Modified();
+    }
+  }
+  void SetTileScale(const int _arg[2]) { this->SetTileScale(_arg[0], _arg[1]); }
   vtkGetVector2Macro(TileScale, int);
   void SetTileScale(int s) { this->SetTileScale(s, s); }
   vtkSetVector4Macro(TileViewport, double);
@@ -260,8 +279,15 @@ protected:
   vtkWindow();
   ~vtkWindow() override;
 
+  inline void ComputeTileSize()
+  {
+    this->TileSize[0] = this->Size[0] * this->TileScale[0];
+    this->TileSize[1] = this->Size[1] * this->TileScale[1];
+  }
+
+  const int* GetActualSizeDirectly() const { return this->Size; }
+
   char* WindowName;
-  int Size[2];
   int Position[2];
   vtkTypeBool Mapped;
   bool ShowWindow;
@@ -271,10 +297,11 @@ protected:
   int DPI;
 
   double TileViewport[4];
-  int TileSize[2];
-  int TileScale[2];
 
 private:
+  int Size[2];
+  int TileSize[2];
+  int TileScale[2];
   vtkWindow(const vtkWindow&) = delete;
   void operator=(const vtkWindow&) = delete;
 };
