@@ -540,8 +540,8 @@ void vtkCamera::ComputeModelViewMatrix()
   if (this->ModelViewTransform->GetMTime() < this->ModelTransformMatrix->GetMTime() ||
     this->ModelViewTransform->GetMTime() < this->ViewTransform->GetMTime())
   {
-    vtkMatrix4x4::Multiply4x4(this->ViewTransform->GetMatrix(), this->ModelTransformMatrix,
-      this->ModelViewTransform->GetMatrix());
+    vtkTransform::Multiply4x4(this->ViewTransform, this->ModelTransformMatrix,
+      this->ModelViewTransform);
   }
 }
 

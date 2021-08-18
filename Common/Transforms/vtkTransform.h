@@ -431,6 +431,24 @@ public:
   }
   //@}
 
+  inline static void Multiply4x4(const vtkMatrix4x4* a, const vtkMatrix4x4* b, vtkTransform* c)
+  {
+    vtkMatrix4x4::Multiply4x4(a, b, c->GetMatrix());
+    c->MatrixUpdateMTime = c->Matrix->GetMTime();
+  }
+  inline static void Multiply4x4(vtkTransform* a, vtkTransform* b, vtkTransform* c)
+  {
+    Multiply4x4(a->GetMatrix(), b->GetMatrix(), c);
+  }
+  inline static void Multiply4x4(const vtkMatrix4x4* a, vtkTransform* b, vtkTransform* c)
+  {
+    Multiply4x4(a, b->GetMatrix(), c);
+  }
+  inline static void Multiply4x4(vtkTransform* a, const vtkMatrix4x4* b, vtkTransform* c)
+  {
+    Multiply4x4(a->GetMatrix(), b, c);
+  }
+
 protected:
   vtkTransform();
   ~vtkTransform() override;
