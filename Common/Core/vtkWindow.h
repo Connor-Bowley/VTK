@@ -249,7 +249,19 @@ public:
    * have no impact. It is just in handling annotation that this information
    * must be available to the mappers and the coordinate calculations.
    */
-  vtkSetVector2Macro(TileScale, int);
+  inline virtual void SetTileScale(int _arg1, int _arg2)
+  {
+    vtkDebugMacro(<< this->GetClassName() << " (" << this << "): setting " << TileScale " to ("
+                  << _arg1 << "," << _arg2 << ")");
+    if ((this->TileScale[0] != _arg1) || (this->TileScale[1] != _arg2))
+    {
+      this->TileScale[0] = _arg1;
+      this->TileScale[1] = _arg2;
+      this->ComputeTileSize();
+      this->Modified();
+    }
+  }
+  void SetTileScale(const int _arg[2]) { this->SetTileScale(_arg[0], _arg[1]); }
   vtkGetVector2Macro(TileScale, int);
   void SetTileScale(int s) { this->SetTileScale(s, s); }
   vtkSetVector4Macro(TileViewport, double);
@@ -259,6 +271,12 @@ public:
 protected:
   vtkWindow();
   ~vtkWindow() override;
+
+  inline void ComputeTileSize()
+  {
+    this->TileSize[0] = this->Size[0] * this->TileScale[0];
+    this->TileSize[1] = this->Size[1] * this->TileScale[1];
+  }
 
   char* WindowName;
   int Size[2];
