@@ -54,9 +54,6 @@ vtkWindow::~vtkWindow()
 //------------------------------------------------------------------------------
 int* vtkWindow::GetSize()
 {
-  this->TileSize[0] = this->Size[0] * this->TileScale[0];
-  this->TileSize[1] = this->Size[1] * this->TileScale[1];
-
   return this->TileSize;
 }
 
@@ -81,6 +78,7 @@ void vtkWindow::SetSize(int width, int height)
   {
     this->Size[0] = width;
     this->Size[1] = height;
+    this->ComputeTileSize();
     this->Modified();
     this->InvokeEvent(vtkCommand::WindowResizeEvent, nullptr);
   }
