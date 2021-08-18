@@ -965,6 +965,20 @@ protected:
    */
   vtkMTimeType LastProjectionTransformationMatrixCameraModified;
 
+  /**
+   * Cache of ViewTransformMatrix from this->LastViewTransformMatrixCamera.
+   */
+  double ViewTransformMatrix[16];
+
+  /**
+   * Camera used to get the transform in this->ViewTransformMatrix.
+   */
+  vtkCamera* LastViewTransformMatrixCamera;
+
+  /**
+   * Modified time from the camera when this->ViewTransformMatrix was set.
+   */
+  vtkMTimeType LastViewTransformCameraModified;
 
   /**
    * Gets the ActiveCamera CompositeProjectionTransformationMatrix, only computing it if necessary.
@@ -978,6 +992,11 @@ protected:
    */
   double* GetProjectionTransformationMatrix();
 
+  /**
+   * Gets the ActiveCamera ViewTransformMatrix, only computing it if necessary.
+   * This function expects that this->ActiveCamera is not nullptr.
+   */
+  double* GetViewTransformMatrix();
 
   /**
    * Ask all props to update and draw any opaque and translucent
