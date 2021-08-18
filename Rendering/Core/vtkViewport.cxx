@@ -21,6 +21,8 @@
 #include "vtkPropCollection.h"
 #include "vtkWindow.h"
 
+#include <algorithm>
+
 //------------------------------------------------------------------------------
 // Create a vtkViewport with a black background, a white ambient light,
 // two-sided lighting turned on, a viewport of (0,0,1,1), and backface culling
@@ -673,29 +675,38 @@ void vtkViewport::ComputeAspect()
     }
     double* vport = this->GetViewport();
 
-    int lowerLeft[2], upperRight[2];
-    lowerLeft[0] = static_cast<int>(vport[0] * size[0] + 0.5);
-    lowerLeft[1] = static_cast<int>(vport[1] * size[1] + 0.5);
-    upperRight[0] = static_cast<int>(vport[2] * size[0] + 0.5);
-    upperRight[1] = static_cast<int>(vport[3] * size[1] + 0.5);
-    upperRight[0]--;
-    upperRight[1]--;
-
-    double aspect[2];
-    if ((upperRight[0] - lowerLeft[0] + 1) != 0 && (upperRight[1] - lowerLeft[1] + 1) != 0)
+    if (!std::equal(size, size+1, this->LastComputeAspectSize)
+        || !std::equal(vport, vport+3, this->LastComputeAspectVPort)
+        || !std::equal(std::begin(this->PixelAspect), std::end(this->PixelAspect), this->LastComputeAspectPixelAspect))
     {
-      aspect[0] = static_cast<double>(upperRight[0] - lowerLeft[0] + 1) /
-        static_cast<double>(upperRight[1] - lowerLeft[1] + 1) * this->PixelAspect[0];
-    }
-    else
-    {
-      // it happens if the vtkWindow is attached to the vtkViewport but
-      // the vtkWindow is not initialized yet, so size[0]==0 and size[1]==0
-      aspect[0] = this->PixelAspect[0];
-    }
-    aspect[1] = 1.0 * this->PixelAspect[1];
+      std::copy(size, size+1, this->LastComputeAspectSize);
+      std::copy(vport, vport+3, this->LastComputeAspectVPort);
+      std::copy(std::begin(this->PixelAspect), std::end(this->PixelAspect), this->LastComputeAspectPixelAspect);
 
-    this->SetAspect(aspect);
+      int lowerLeft[2], upperRight[2];
+      lowerLeft[0] = static_cast<int>(vport[0] * size[0] + 0.5);
+      lowerLeft[1] = static_cast<int>(vport[1] * size[1] + 0.5);
+      upperRight[0] = static_cast<int>(vport[2] * size[0] + 0.5);
+      upperRight[1] = static_cast<int>(vport[3] * size[1] + 0.5);
+      upperRight[0]--;
+      upperRight[1]--;
+
+      double aspect[2];
+      if ((upperRight[0] - lowerLeft[0] + 1) != 0 && (upperRight[1] - lowerLeft[1] + 1) != 0)
+      {
+        aspect[0] = static_cast<double>(upperRight[0] - lowerLeft[0] + 1) /
+          static_cast<double>(upperRight[1] - lowerLeft[1] + 1) * this->PixelAspect[0];
+      }
+      else
+      {
+        // it happens if the vtkWindow is attached to the vtkViewport but
+        // the vtkWindow is not initialized yet, so size[0]==0 and size[1]==0
+        aspect[0] = this->PixelAspect[0];
+      }
+      aspect[1] = 1.0 * this->PixelAspect[1];
+
+      this->SetAspect(aspect);
+    }
   }
 }
 
