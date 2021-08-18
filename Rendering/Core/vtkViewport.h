@@ -412,6 +412,10 @@ protected:
   double ViewPoint[3];
   double WorldPoint[4];
 
+  int LastComputeAspectSize[2];
+  double LastComputeAspectVPort[4];
+  double LastComputeAspectPixelAspect[2];
+
 private:
   vtkViewport(const vtkViewport&) = delete;
   void operator=(const vtkViewport&) = delete;
