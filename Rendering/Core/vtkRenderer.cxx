@@ -1424,7 +1424,7 @@ void vtkRenderer::WorldToView()
 // Convert world point coordinates to view coordinates.
 void vtkRenderer::WorldToView(double& x, double& y, double& z)
 {
-  double     view[4];
+  double view[4];
 
   // get the perspective transformation from the active camera
   if (!this->ActiveCamera)
@@ -1476,7 +1476,7 @@ void vtkRenderer::WorldToPose(double& x, double& y, double& z)
 
 void vtkRenderer::PoseToView(double& x, double& y, double& z)
 {
-  double     view[4];
+  double view[4];
 
   // get the perspective transformation from the active camera
   if (!this->ActiveCamera)
