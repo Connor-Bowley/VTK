@@ -251,7 +251,7 @@ public:
    */
   inline virtual void SetTileScale(int _arg1, int _arg2)
   {
-    vtkDebugMacro(<< this->GetClassName() << " (" << this << "): setting " << TileScale " to ("
+    vtkDebugMacro(<< this->GetClassName() << " (" << this << "): setting " << TileScale << " to ("
                   << _arg1 << "," << _arg2 << ")");
     if ((this->TileScale[0] != _arg1) || (this->TileScale[1] != _arg2))
     {
