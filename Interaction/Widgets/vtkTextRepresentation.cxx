@@ -290,7 +290,7 @@ void vtkTextRepresentation::CheckTextBoundary()
 
     // Convert padding in pixels into viewport
     // Multiply by 2 to ensure an even padding
-    int* size = win->GetSize();
+    const int* size = win->GetSize();
     double paddingX = 2 * this->RightPadding / (double)size[0];
     double paddingY = 2 * this->TopPadding / (double)size[1];
 

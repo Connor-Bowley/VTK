@@ -1065,8 +1065,8 @@ void vtkOpenGLRenderWindow::Frame()
     vtkOpenGLFramebufferObject::Blit(srcExtents, srcExtents,
       (copiedColor ? 0 : GL_COLOR_BUFFER_BIT) | GL_DEPTH_BUFFER_BIT, GL_NEAREST);
 
-    this->GetState()->vtkglViewport(0, 0, this->Size[0], this->Size[1]);
-    this->GetState()->vtkglScissor(0, 0, this->Size[0], this->Size[1]);
+    this->GetState()->vtkglViewport(0, 0, this->GetActualSizeDirectly()[0], this->GetActualSizeDirectly()[1]);
+    this->GetState()->vtkglScissor(0, 0, this->GetActualSizeDirectly()[0], this->GetActualSizeDirectly()[1]);
     this->GetState()->PopFramebufferBindings();
 
     if (!this->UseOffScreenBuffers)
@@ -1088,11 +1088,11 @@ void vtkOpenGLRenderWindow::BlitDisplayFramebuffersToHardware()
   auto ostate = this->GetState();
   ostate->PushFramebufferBindings();
   this->DisplayFramebuffer->Bind(GL_READ_FRAMEBUFFER);
-  this->GetState()->vtkglViewport(0, 0, this->Size[0], this->Size[1]);
-  this->GetState()->vtkglScissor(0, 0, this->Size[0], this->Size[1]);
+  this->GetState()->vtkglViewport(0, 0, this->GetActualSizeDirectly()[0], this->GetActualSizeDirectly()[1]);
+  this->GetState()->vtkglScissor(0, 0, this->GetActualSizeDirectly()[0], this->GetActualSizeDirectly()[1]);
 
   // recall Blit upper right corner is exclusive of the range
-  const int srcExtents[4] = { 0, this->Size[0], 0, this->Size[1] };
+  const int srcExtents[4] = { 0, this->GetActualSizeDirectly()[0], 0, this->GetActualSizeDirectly()[1] };
 
   this->GetState()->vtkglBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 
@@ -1114,8 +1114,8 @@ void vtkOpenGLRenderWindow::BlitDisplayFramebuffersToHardware()
 
 void vtkOpenGLRenderWindow::BlitDisplayFramebuffer()
 {
-  this->BlitDisplayFramebuffer(0, 0, 0, this->Size[0], this->Size[1], 0, 0, this->Size[0],
-    this->Size[1], GL_COLOR_BUFFER_BIT, GL_NEAREST);
+  this->BlitDisplayFramebuffer(0, 0, 0, this->GetActualSizeDirectly()[0], this->GetActualSizeDirectly()[1], 0, 0, this->GetActualSizeDirectly()[0],
+    this->GetActualSizeDirectly()[1], GL_COLOR_BUFFER_BIT, GL_NEAREST);
 }
 
 void vtkOpenGLRenderWindow::BlitDisplayFramebuffer(int right, int srcX, int srcY, int srcWidth,
@@ -1140,15 +1140,15 @@ void vtkOpenGLRenderWindow::BlitDisplayFramebuffer(int right, int srcX, int srcY
 
 void vtkOpenGLRenderWindow::BlitToRenderFramebuffer(bool includeDepth)
 {
-  this->BlitToRenderFramebuffer(0, 0, this->Size[0], this->Size[1], 0, 0, this->Size[0],
-    this->Size[1], GL_COLOR_BUFFER_BIT | (includeDepth ? GL_DEPTH_BUFFER_BIT : 0), GL_NEAREST);
+  this->BlitToRenderFramebuffer(0, 0, this->GetActualSizeDirectly()[0], this->GetActualSizeDirectly()[1], 0, 0, this->GetActualSizeDirectly()[0],
+    this->GetActualSizeDirectly()[1], GL_COLOR_BUFFER_BIT | (includeDepth ? GL_DEPTH_BUFFER_BIT : 0), GL_NEAREST);
 }
 
 void vtkOpenGLRenderWindow::BlitToRenderFramebuffer(int srcX, int srcY, int srcWidth, int srcHeight,
   int destX, int destY, int destWidth, int destHeight, int bufferMode, int interpolation)
 {
   // Ensure the offscreen framebuffer is created and updated to the right size
-  this->CreateFramebuffers(this->Size[0], this->Size[1]);
+  this->CreateFramebuffers(this->GetActualSizeDirectly()[0], this->GetActualSizeDirectly()[1]);
 
   // depending on what is current bound this can be tricky, especially between multisampled
   // buffers
@@ -1214,9 +1214,11 @@ void vtkOpenGLRenderWindow::Start()
     GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
   // creates or resizes the framebuffer
-  this->Size[0] = (this->Size[0] > 0 ? this->Size[0] : 300);
-  this->Size[1] = (this->Size[1] > 0 ? this->Size[1] : 300);
-  this->CreateFramebuffers(this->Size[0], this->Size[1]);
+  int newSize[2];
+  newSize[0] = (this->GetActualSizeDirectly()[0] > 0 ? this->GetActualSizeDirectly()[0] : 300);
+  newSize[1] = (this->GetActualSizeDirectly()[1] > 0 ? this->GetActualSizeDirectly()[1] : 300);
+  this->SetSizeNoEvent(newSize);
+  this->CreateFramebuffers(this->GetActualSizeDirectly()[0], this->GetActualSizeDirectly()[1]);
 
   // push and bind
   this->GetState()->PushFramebufferBindings();

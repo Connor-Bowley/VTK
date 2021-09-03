@@ -72,7 +72,7 @@ public:
   /**
    * Get the current size of the window in pixels.
    */
-  int* GetSize() VTK_SIZEHINT(2) override;
+  const int* GetSize() VTK_SIZEHINT(2) override;
 
   //@{
   /**

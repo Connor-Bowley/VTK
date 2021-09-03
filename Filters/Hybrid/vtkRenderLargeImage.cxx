@@ -178,7 +178,6 @@ void vtkRenderLargeImage::RequestData(vtkInformation* vtkNotUsed(request),
   data->AllocateScalars(outInfo);
   int inExtent[6];
   vtkIdType inIncr[3];
-  int* size;
   int inWindowExtent[4];
   double viewAngle, parallelScale, windowCenter[2];
   vtkCamera* cam;
@@ -204,7 +203,7 @@ void vtkRenderLargeImage::RequestData(vtkInformation* vtkNotUsed(request),
   data->GetIncrements(inIncr);
 
   // get the size of the render window
-  size = this->Input->GetRenderWindow()->GetSize();
+  const int* size = this->Input->GetRenderWindow()->GetSize();
 
   // convert the request into windows
   inWindowExtent[0] = inExtent[0] / size[0];

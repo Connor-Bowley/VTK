@@ -263,7 +263,6 @@ void vtkRenderer::Render()
   double t1, t2;
   int i;
   vtkProp* aProp;
-  int* size;
 
   // If Draw is not on, ignore the render.
   if (!this->Draw)
@@ -276,7 +275,7 @@ void vtkRenderer::Render()
 
   this->InvokeEvent(vtkCommand::StartEvent, nullptr);
 
-  size = this->RenderWindow->GetSize();
+  const int* size = this->RenderWindow->GetSize();
 
   // if backing store is on and we have a stored image
   if (this->BackingStore && this->BackingImage && this->MTime < this->RenderTime &&

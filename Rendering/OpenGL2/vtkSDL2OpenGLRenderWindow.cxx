@@ -294,7 +294,7 @@ void vtkSDL2OpenGLRenderWindow::DestroyWindow()
 }
 
 // Get the current size of the window.
-int* vtkSDL2OpenGLRenderWindow::GetSize(void)
+const int* vtkSDL2OpenGLRenderWindow::GetSize(void)
 {
   // if we aren't mapped then just return the ivar
   if (this->WindowId && this->Mapped)

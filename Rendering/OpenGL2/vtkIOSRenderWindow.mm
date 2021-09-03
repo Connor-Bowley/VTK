@@ -352,7 +352,7 @@ void vtkIOSRenderWindow::DestroyOffScreenWindow() {}
 
 //----------------------------------------------------------------------------
 // Get the current size of the window.
-int* vtkIOSRenderWindow::GetSize()
+const int* vtkIOSRenderWindow::GetSize()
 {
   // if we aren't mapped then just return call super
   if (!this->Mapped)

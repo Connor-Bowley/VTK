@@ -1150,7 +1150,7 @@ void vtkWin32OpenGLRenderWindow::DestroyWindow()
 
 //------------------------------------------------------------------------------
 // Get the current size of the window.
-int* vtkWin32OpenGLRenderWindow::GetSize(void)
+const int* vtkWin32OpenGLRenderWindow::GetSize(void)
 {
   // if we aren't mapped then just call super
   if (this->WindowId && !this->UseOffScreenBuffers)

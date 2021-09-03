@@ -274,7 +274,7 @@ void vtkRenderWindow::Render()
   // if SetSize has not yet been called (from a script, possible off
   // screen use, other scenarios?) then call it here with reasonable
   // default values
-  if (0 == this->Size[0] && 0 == this->Size[1])
+  if (0 == this->GetActualSizeDirectly()[0] && 0 == this->GetActualSizeDirectly()[1])
   {
     this->SetSize(300, 300);
   }
@@ -486,9 +486,8 @@ void vtkRenderWindow::StereoMidpoint()
     (this->StereoType == VTK_STEREO_CHECKERBOARD) ||
     (this->StereoType == VTK_STEREO_SPLITVIEWPORT_HORIZONTAL))
   {
-    int* size;
     // get the size
-    size = this->GetSize();
+    const int* size = this->GetSize();
     // get the data
     this->GetPixelData(0, 0, size[0] - 1, size[1] - 1, 0, this->StereoBuffer);
   }
@@ -548,10 +547,8 @@ void vtkRenderWindow::CopyResultFrame()
 {
   if (this->ResultFrame->GetNumberOfTuples() > 0)
   {
-    int* size;
-
     // get the size
-    size = this->GetSize();
+    const int* size = this->GetSize();
 
     assert(this->ResultFrame->GetNumberOfTuples() == size[0] * size[1]);
 

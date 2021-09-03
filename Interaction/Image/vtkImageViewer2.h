@@ -199,7 +199,7 @@ public:
    * Get the size (width and height) of the rendering window in
    * screen coordinates (in pixels).
    */
-  virtual int* GetSize() VTK_SIZEHINT(2);
+  virtual const int* GetSize() VTK_SIZEHINT(2);
 
   /**
    * Set the size (width and height) of the rendering window in

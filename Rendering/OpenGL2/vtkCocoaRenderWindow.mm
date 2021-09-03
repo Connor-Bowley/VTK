@@ -1086,7 +1086,7 @@ void vtkCocoaRenderWindow::Initialize()
 }
 
 //----------------------------------------------------------------------------
-int* vtkCocoaRenderWindow::GetSize()
+const int* vtkCocoaRenderWindow::GetSize()
 {
   // if we aren't mapped then just call super
   if (this->Mapped && !this->UseOffScreenBuffers)
