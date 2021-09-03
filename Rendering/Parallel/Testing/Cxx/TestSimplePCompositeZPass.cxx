@@ -342,8 +342,7 @@ void MyProcess::Execute()
         renWin->Render();
         if (compositeZPass->IsSupported(static_cast<vtkOpenGLRenderWindow*>(renWin)))
         {
-          int* dims;
-          dims = renWin->GetSize();
+          const int* dims = renWin->GetSize();
           float* zBuffer = new float[dims[0] * dims[1]];
           renWin->GetZbufferData(0, 0, dims[0] - 1, dims[1] - 1, zBuffer);
 

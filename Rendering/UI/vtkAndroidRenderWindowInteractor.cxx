@@ -531,7 +531,6 @@ void vtkAndroidRenderWindowInteractor::Initialize()
   }
 
   vtkRenderWindow* ren;
-  int* size;
 
   this->Initialized = 1;
   // get the info we need from the RenderingWindow
@@ -573,7 +572,7 @@ void vtkAndroidRenderWindowInteractor::Initialize()
     }
   }
 
-  size = ren->GetSize();
+  const int* size = ren->GetSize();
   ren->GetPosition();
   this->Enable();
   this->Size[0] = size[0];

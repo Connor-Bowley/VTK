@@ -775,12 +775,11 @@ void vtkOpenVRRenderWindowInteractor::Initialize()
   }
 
   vtkOpenVRRenderWindow* ren = vtkOpenVRRenderWindow::SafeDownCast(this->RenderWindow);
-  int* size;
 
   this->Initialized = 1;
   // get the info we need from the RenderingWindow
 
-  size = ren->GetSize();
+  const int* size = ren->GetSize();
   ren->GetPosition();
   this->Enable();
   this->Size[0] = size[0];
