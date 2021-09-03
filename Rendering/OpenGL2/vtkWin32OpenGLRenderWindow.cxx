@@ -1175,7 +1175,7 @@ const int* vtkWin32OpenGLRenderWindow::GetSize(void)
 
 //------------------------------------------------------------------------------
 // Get the size of the whole screen.
-int* vtkWin32OpenGLRenderWindow::GetScreenSize(void)
+const int* vtkWin32OpenGLRenderWindow::GetScreenSize(void)
 {
   HDC hDC = ::GetDC(nullptr);
   if (hDC)

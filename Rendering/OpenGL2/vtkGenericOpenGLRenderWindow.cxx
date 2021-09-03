@@ -148,7 +148,7 @@ void vtkGenericOpenGLRenderWindow::SetWindowInfo(const char*) {}
 
 void vtkGenericOpenGLRenderWindow::SetParentInfo(const char*) {}
 
-int* vtkGenericOpenGLRenderWindow::GetScreenSize()
+const int* vtkGenericOpenGLRenderWindow::GetScreenSize()
 {
   return this->ScreenSize;
 }

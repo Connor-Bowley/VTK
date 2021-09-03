@@ -143,7 +143,7 @@ bool vtkSDL2OpenGLRenderWindow::SetSwapControl(int i)
 //------------------------------------------------------------------------------
 void vtkSDL2OpenGLRenderWindow::SetSize(int x, int y)
 {
-  if ((this->Size[0] != x) || (this->Size[1] != y))
+  if ((this->GetActualSizeDirectly()[0] != x) || (this->GetActualSizeDirectly()[1] != y))
   {
     this->Superclass::SetSize(x, y);
 
@@ -220,8 +220,8 @@ void vtkSDL2OpenGLRenderWindow::CreateAWindow()
 {
   int x = ((this->Position[0] >= 0) ? this->Position[0] : SDL_WINDOWPOS_UNDEFINED);
   int y = ((this->Position[1] >= 0) ? this->Position[1] : SDL_WINDOWPOS_UNDEFINED);
-  int height = ((this->Size[1] > 0) ? this->Size[1] : 300);
-  int width = ((this->Size[0] > 0) ? this->Size[0] : 300);
+  int height = ((this->GetActualSizeDirectly()[1] > 0) ? this->GetActualSizeDirectly()[1] : 300);
+  int width = ((this->GetActualSizeDirectly()[0] > 0) ? this->GetActualSizeDirectly()[0] : 300);
   this->SetSize(width, height);
 
 #ifdef __EMSCRIPTEN__
@@ -303,22 +303,20 @@ const int* vtkSDL2OpenGLRenderWindow::GetSize(void)
     int h = 0;
 
     SDL_GetWindowSize(this->WindowId, &w, &h);
-    this->Size[0] = w;
-    this->Size[1] = h;
+    this->SetSizeNoEvent(w, h);
   }
 
   return this->vtkOpenGLRenderWindow::GetSize();
 }
 
 // Get the size of the whole screen.
-int* vtkSDL2OpenGLRenderWindow::GetScreenSize(void)
+const int* vtkSDL2OpenGLRenderWindow::GetScreenSize(void)
 {
   SDL_Rect rect;
   SDL_GetDisplayBounds(0, &rect);
-  this->Size[0] = rect.w;
-  this->Size[1] = rect.h;
+  this->SetSizeNoEvent(rect.w, rect.h);
 
-  return this->Size;
+  return this->GetActualSizeDirectly();
 }
 
 // Get the position in screen coordinates of the window.

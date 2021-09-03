@@ -106,7 +106,7 @@ public:
   /**
    * Get the current size of the screen in pixels.
    */
-  virtual int* GetScreenSize() VTK_SIZEHINT(2) { return nullptr; }
+  virtual const int* GetScreenSize() VTK_SIZEHINT(2) { return nullptr; }
 
   //@{
   /**

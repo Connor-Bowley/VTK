@@ -51,8 +51,8 @@ void vtkIOSRenderWindow::BlitDisplayFramebuffersToHardware()
   auto ostate = this->GetState();
   ostate->PushFramebufferBindings();
   this->DisplayFramebuffer->Bind(GL_READ_FRAMEBUFFER);
-  this->GetState()->vtkglViewport(0, 0, this->Size[0], this->Size[1]);
-  this->GetState()->vtkglScissor(0, 0, this->Size[0], this->Size[1]);
+  this->GetState()->vtkglViewport(0, 0, this->GetActualSizeDirectly()[0], this->GetActualSizeDirectly()[1]);
+  this->GetState()->vtkglScissor(0, 0, this->GetActualSizeDirectly()[0], this->GetActualSizeDirectly()[1]);
 
   // recall Blit upper right corner is exclusive of the range
   const int srcExtents[4] = { 0, this->Size[0], 0, this->Size[1] };
@@ -258,11 +258,10 @@ vtkTypeBool vtkIOSRenderWindow::IsDirect()
 //----------------------------------------------------------------------------
 void vtkIOSRenderWindow::SetSize(int width, int height)
 {
-  if ((this->Size[0] != width) || (this->Size[1] != height) || this->GetParentId())
+  if ((this->GetActualSizeDirectly()[0] != width) || (this->GetActualSizeDirectly()[1] != height) || this->GetParentId())
   {
     this->Modified();
-    this->Size[0] = width;
-    this->Size[1] = height;
+    this->SetSizeNoEvent(width, height);
   }
 }
 
@@ -365,7 +364,7 @@ const int* vtkIOSRenderWindow::GetSize()
 
 //----------------------------------------------------------------------------
 // Get the current size of the screen in pixels.
-int* vtkIOSRenderWindow::GetScreenSize()
+const int* vtkIOSRenderWindow::GetScreenSize()
 {
   // TODO: use UISceen to actually determine screen size.
 

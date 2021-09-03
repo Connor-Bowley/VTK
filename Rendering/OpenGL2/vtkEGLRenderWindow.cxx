@@ -244,9 +244,9 @@ void vtkEGLRenderWindow::SetSize(int width, int height)
     // We only need to resize the window if we own it
     int w, h;
     this->GetEGLSurfaceSize(&w, &h);
-    if (w != this->Size[0] || h != this->Size[1])
+    if (w != this->GetActualSizeDirectly()[0] || h != this->GetActualSizeDirectly()[1])
     {
-      this->ResizeWindow(this->Size[0], this->Size[1]);
+      this->ResizeWindow(this->GetActualSizeDirectly()[0], this->GetActualSizeDirectly()[1]);
     }
   }
 }
@@ -254,10 +254,10 @@ void vtkEGLRenderWindow::SetSize(int width, int height)
 void vtkEGLRenderWindow::CreateAWindow()
 {
   int s[2];
-  if (this->Size[0] != 0 && this->Size[1] != 0)
+  if (this->GetActualSizeDirectly()[0] != 0 && this->GetActualSizeDirectly()[1] != 0)
   {
-    s[0] = this->Size[0];
-    s[1] = this->Size[1];
+    s[0] = this->GetActualSizeDirectly()[0];
+    s[1] = this->GetActualSizeDirectly()[1];
   }
   else
   {
@@ -581,7 +581,7 @@ bool vtkEGLRenderWindow::IsCurrent()
 }
 
 // Get the size of the screen in pixels
-int* vtkEGLRenderWindow::GetScreenSize()
+const int* vtkEGLRenderWindow::GetScreenSize()
 {
   // TODO: actually determine screensize.
 

@@ -139,7 +139,7 @@ void vtkOSOpenGLRenderWindow::SetStereoCapableWindow(vtkTypeBool capable)
 
 void vtkOSOpenGLRenderWindow::CreateAWindow()
 {
-  this->CreateOffScreenWindow(this->Size[0], this->Size[1]);
+  this->CreateOffScreenWindow(this->GetActualSizeDirectly()[0], this->GetActualSizeDirectly()[1]);
 }
 
 void vtkOSOpenGLRenderWindow::DestroyWindow()
@@ -190,8 +190,7 @@ void vtkOSOpenGLRenderWindow::CreateOffScreenWindow(int width, int height)
   this->MakeCurrent();
 
   this->Mapped = 0;
-  this->Size[0] = width;
-  this->Size[1] = height;
+  this->SetSizeNoEvent(width, height);
 
   this->MakeCurrent();
 
@@ -260,8 +259,8 @@ void vtkOSOpenGLRenderWindow::Initialize(void)
   if (!(this->Internal->OffScreenContextId))
   {
     // initialize offscreen window
-    int width = ((this->Size[0] > 0) ? this->Size[0] : 300);
-    int height = ((this->Size[1] > 0) ? this->Size[1] : 300);
+    int width = ((this->GetActualSizeDirectly()[0] > 0) ? this->GetActualSizeDirectly()[0] : 300);
+    int height = ((this->GetActualSizeDirectly()[1] > 0) ? this->GetActualSizeDirectly()[1] : 300);
     this->CreateOffScreenWindow(width, height);
   }
 }
@@ -292,7 +291,7 @@ void vtkOSOpenGLRenderWindow::WindowRemap()
 // Specify the size of the rendering window.
 void vtkOSOpenGLRenderWindow::SetSize(int width, int height)
 {
-  if ((this->Size[0] != width) || (this->Size[1] != height))
+  if ((this->GetActualSizeDirectly()[0] != width) || (this->GetActualSizeDirectly()[1] != height))
   {
     this->Superclass::SetSize(width, height);
     if (!this->UseOffScreenBuffers)
@@ -316,7 +315,7 @@ void vtkOSOpenGLRenderWindow::MakeCurrent()
   if (this->Internal->OffScreenContextId)
   {
     if (OSMesaMakeCurrent(this->Internal->OffScreenContextId, this->Internal->OffScreenWindow,
-          GL_UNSIGNED_BYTE, this->Size[0], this->Size[1]) != GL_TRUE)
+          GL_UNSIGNED_BYTE, this->GetActualSizeDirectly()[0], this->GetActualSizeDirectly()[1]) != GL_TRUE)
     {
       vtkWarningMacro("failed call to OSMesaMakeCurrent");
     }
@@ -352,7 +351,7 @@ vtkTypeBool vtkOSOpenGLRenderWindow::GetEventPending()
 }
 
 // Get the size of the screen in pixels
-int* vtkOSOpenGLRenderWindow::GetScreenSize()
+const int* vtkOSOpenGLRenderWindow::GetScreenSize()
 {
   this->ScreenSize[0] = 1280;
   this->ScreenSize[1] = 1024;

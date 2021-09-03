@@ -1177,7 +1177,7 @@ vtkTypeBool vtkXOpenGLRenderWindow::GetEventPending()
 }
 
 // Get the size of the screen in pixels
-int* vtkXOpenGLRenderWindow::GetScreenSize()
+const int* vtkXOpenGLRenderWindow::GetScreenSize()
 {
   // get the default display connection
   if (!this->DisplayId)

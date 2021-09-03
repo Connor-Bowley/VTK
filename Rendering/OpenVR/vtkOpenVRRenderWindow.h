@@ -335,7 +335,7 @@ public:
   /**
    * Get the current size of the screen in pixels.
    */
-  virtual int* GetScreenSize();
+  virtual const int* GetScreenSize();
 
   //@{
   /**
