@@ -85,9 +85,8 @@ vtkOpenVRRenderWindow::vtkOpenVRRenderWindow()
 
   this->StereoCapableWindow = 1;
   this->StereoRender = 1;
-  this->UseOffScreenBuffers = 1;
-  this->Size[0] = 640;
-  this->Size[1] = 720;
+  this->UseOffScreenBuffers = true;
+  this->SetSizeNoEvent(640, 720);
   this->Position[0] = 100;
   this->Position[1] = 100;
   this->OpenVRRenderModels = nullptr;
@@ -368,7 +367,7 @@ bool vtkOpenVRRenderWindow::IsCurrent()
 //------------------------------------------------------------------------------
 void vtkOpenVRRenderWindow::SetSize(int width, int height)
 {
-  if ((this->Size[0] != width) || (this->Size[1] != height))
+  if ((this->GetActualSizeDirectly()[0] != width) || (this->GetActualSizeDirectly()[1] != height))
   {
     this->Superclass::SetSize(width, height);
 
@@ -392,7 +391,7 @@ const int* vtkOpenVRRenderWindow::GetScreenSize()
     this->ScreenSize[1] = renderHeight;
   }
 
-  return this->Size;
+  return this->GetActualSizeDirectly();
 }
 
 //------------------------------------------------------------------------------
@@ -541,7 +540,7 @@ void vtkOpenVRRenderWindow::StereoMidpoint()
     this->GetState()->vtkglBindFramebuffer(
       GL_DRAW_FRAMEBUFFER, this->LeftEyeDesc.m_nResolveFramebufferId);
 
-    glBlitFramebuffer(0, 0, this->Size[0], this->Size[1], 0, 0, this->Size[0], this->Size[1],
+    glBlitFramebuffer(0, 0, this->GetActualSizeDirectly()[0], this->GetActualSizeDirectly()[1], 0, 0, this->GetActualSizeDirectly()[0], this->GetActualSizeDirectly()[1],
       GL_COLOR_BUFFER_BIT, GL_LINEAR);
 
     vr::Texture_t leftEyeTexture = { (void*)(long)this->LeftEyeDesc.m_nResolveTextureId,
@@ -574,7 +573,7 @@ void vtkOpenVRRenderWindow::StereoRenderComplete()
     this->GetState()->vtkglBindFramebuffer(
       GL_DRAW_FRAMEBUFFER, this->RightEyeDesc.m_nResolveFramebufferId);
 
-    glBlitFramebuffer(0, 0, this->Size[0], this->Size[1], 0, 0, this->Size[0], this->Size[1],
+    glBlitFramebuffer(0, 0, this->GetActualSizeDirectly()[0], this->GetActualSizeDirectly()[1], 0, 0, this->GetActualSizeDirectly()[0], this->GetActualSizeDirectly()[1],
       GL_COLOR_BUFFER_BIT, GL_LINEAR);
 
     vr::Texture_t rightEyeTexture = { (void*)(long)this->RightEyeDesc.m_nResolveTextureId,
@@ -655,8 +654,7 @@ void vtkOpenVRRenderWindow::Initialize(void)
   uint32_t renderHeight;
   this->HMD->GetRecommendedRenderTargetSize(&renderWidth, &renderHeight);
 
-  this->Size[0] = renderWidth;
-  this->Size[1] = renderHeight;
+  this->SetSizeNoEvent(renderWidth, renderHeight);
 
   this->HelperWindow->SetDisplayId(this->GetGenericDisplayId());
   this->HelperWindow->SetShowWindow(false);
@@ -685,8 +683,8 @@ void vtkOpenVRRenderWindow::Initialize(void)
   std::string strWindowTitle = "VTK - " + m_strDriver + " " + m_strDisplay;
   this->SetWindowName(strWindowTitle.c_str());
 
-  this->CreateFrameBuffer(this->Size[0], this->Size[1], this->LeftEyeDesc);
-  this->CreateFrameBuffer(this->Size[0], this->Size[1], this->RightEyeDesc);
+  this->CreateFrameBuffer(this->GetActualSizeDirectly()[0], this->GetActualSizeDirectly()[1], this->LeftEyeDesc);
+  this->CreateFrameBuffer(this->GetActualSizeDirectly()[0], this->GetActualSizeDirectly()[1], this->RightEyeDesc);
 
   if (!vr::VRCompositor())
   {

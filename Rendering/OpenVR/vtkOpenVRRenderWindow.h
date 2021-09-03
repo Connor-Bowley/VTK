@@ -129,8 +129,8 @@ public:
   GLuint GetRightResolveBufferId() { return this->RightEyeDesc.m_nResolveFramebufferId; }
   void GetRenderBufferSize(int& width, int& height)
   {
-    width = this->Size[0];
-    height = this->Size[1];
+    width = this->GetActualSizeDirectly()[0];
+    height = this->GetActualSizeDirectly()[1];
   }
   //@}
 
