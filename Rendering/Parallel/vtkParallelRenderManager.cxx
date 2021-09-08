@@ -1012,15 +1012,9 @@ void vtkParallelRenderManager::SetImageReductionFactorForUpdateRate(double desir
     return;
   }
 
-  const int* size = this->ForceRenderWindowSize ? this->ForcedRenderWindowSize : this->RenderWindow->GetActualSize();
-  if (this->ForceRenderWindowSize)
-  {
-    size = this->ForcedRenderWindowSize;
-  }
-  else
-  {
-    size = this->RenderWindow->GetActualSize();
-  }
+
+  const int* size = this->ForceRenderWindowSize ? this->ForcedRenderWindowSize
+                                                : this->RenderWindow->GetActualSize();
   int numPixels = size[0] * size[1];
   int numReducedPixels =
     (int)(numPixels / (this->ImageReductionFactor * this->ImageReductionFactor));
